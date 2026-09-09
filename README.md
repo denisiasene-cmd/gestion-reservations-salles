@@ -53,3 +53,13 @@ Parce que son rôle est seulement de vérifier les données. L’enregistrement 
 ### Comment retourner plusieurs erreurs en une seule fois ?
 On met toutes les erreurs dans un tableau, puis on les retourne dans ValidationResult.
 
+### Quelle différence existe entre DTO et modèle Eloquent ? 
+ Le DTO transporte les données. Le modèle Eloquent représente une table de la base de données.
+### Pourquoi le DTO ne doit-il pas appeler save() ? 
+ Parce que son rôle est seulement de transporter les données, pas de les enregistrer.
+### À quel moment transforme-t-on les chaînes en dates ?
+Avant de créer le DTO, après avoir validé les données.
+### Le DTO doit-il contenir la règle de chevauchement ? 
+Le chevauchement est une règle métier, donc il sera géré par le service.
+
+
