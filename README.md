@@ -4,7 +4,6 @@ Application web universitaire de gestion des réservations de salles.
 
 Projet réalisé en PHP orienté objet avec MySQL, Eloquent, Nginx, Docker et plusieurs composants Composer.
 
-
 ### Quelle est le rôle de Composer ?
 Composer gère les dépendances et l’autoload du projet. Il permet d’installer et de gérer les bibliothèques que nous allons utiliser dans notre projet.
 ### Quelle différence existe entre require et require-dev ?
@@ -15,3 +14,11 @@ Il faut versionner composer.lock parce qu’il permet de garder les versions exa
 ### Pourquoi ne versionne-t-on pas vendor/ ?
 On ne versionne pas le dossier vendor/ parce qu’il contient les bibliothèques installées par Composer et qu’il peut être recréé avec la commande composer install.
 
+### Quel rôle joue Capsule\Manager ? 
+Il configure et gère la connexion d'Eloquent à la base de données.
+### Pourquoi Eloquent peut fonctionner sans Laravel ?
+Parce qu'Eloquent est disponible comme composant PHP séparé (illuminate/database). Laravel l'utilise, mais il n'est pas nécessaire pour utiliser le composant.
+### Où doit se trouver le démarrage de l’ORM ?
+ Dans la partie configuration/bootstrap de l'application, pas dans les contrôleurs, services ou modèles.
+### Quelle différence existe entre ORM et SQL écrit à la main ? 
+Avec SQL écrit à la main, on écrit directement les requêtes SQL. Avec un ORM comme Eloquent, on manipule des objets/modèles PHP qui permettent d'interagir avec les tables.
