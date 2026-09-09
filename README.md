@@ -35,3 +35,21 @@ true → salle active ;
 false → salle inactive.
 ### Pourquoi convertir active en booléen et les dates en objets ?
 Une date ne sert pas seulement à être affichée : dans notre projet, nous devons comparer et calculer les dates.
+
+### Quelle différence entre migration et seeder ?
+Migration = crée ou modifie la structure de la base de données.
+Seeder = insère les données initiales dans cette structure.
+### Pourquoi les données initiales doivent-elles être reproductibles ?
+Parce qu'on doit pouvoir relancer le seed plusieurs fois et obtenir le même état sans créer de doublons.
+### Comment empêcher les doublons ?
+firstOrCreate() il nous aide a rechercher si la existe et si oui il ne le recree pas et si non il le cree .
+
+### Pourquoi séparer la validation syntaxique des règles métier ?
+Parce que la validation syntaxique vérifie le format des données, tandis que les règles métier vérifient les règles de l’application.
+### Pourquoi créer une interface de validation ?
+ Pour que tous les validateurs suivent la même structure.
+### Pourquoi le validateur ne doit-il pas enregistrer les données ?
+Parce que son rôle est seulement de vérifier les données. L’enregistrement est fait par une autre partie du projet.
+### Comment retourner plusieurs erreurs en une seule fois ?
+On met toutes les erreurs dans un tableau, puis on les retourne dans ValidationResult.
+
