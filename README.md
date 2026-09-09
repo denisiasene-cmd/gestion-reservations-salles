@@ -1,7 +1,5 @@
 # Gestion des réservations de salles
-
 Application web universitaire de gestion des réservations de salles.
-
 Projet réalisé en PHP orienté objet avec MySQL, Eloquent, Nginx, Docker et plusieurs composants Composer.
 
 ### Quelle est le rôle de Composer ?
@@ -22,3 +20,18 @@ Parce qu'Eloquent est disponible comme composant PHP séparé (illuminate/databa
  Dans la partie configuration/bootstrap de l'application, pas dans les contrôleurs, services ou modèles.
 ### Quelle différence existe entre ORM et SQL écrit à la main ? 
 Avec SQL écrit à la main, on écrit directement les requêtes SQL. Avec un ORM comme Eloquent, on manipule des objets/modèles PHP qui permettent d'interagir avec les tables.
+
+### Quel type de relation Eloquent avez-vous utilisé ?
+hasMany dans Salle : une salle peut avoir plusieurs réservations.
+belongsTo dans Reservation : une réservation appartient à une seule salle.
+### Quelle est la différence entre hasMany et belongsTo ?
+Ils servent à protéger le modèle contre le remplissage massif.
+$fillable indique les champs que l'on autorise à remplir automatiquement.
+$guarded indique les champs que l'on interdit de remplir automatiquement.
+### Pourquoi utiliser $fillable ou $guarded ?
+La colonne active indique simplement si une salle est active ou non.
+Avec le cast boolean, Eloquent transforme la valeur en PHP en :
+true → salle active ;
+false → salle inactive.
+### Pourquoi convertir active en booléen et les dates en objets ?
+Une date ne sert pas seulement à être affichée : dans notre projet, nous devons comparer et calculer les dates.
