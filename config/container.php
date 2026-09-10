@@ -20,6 +20,7 @@ use App\Service\ReservationStrategy\SalleExisteStrategy;
 use App\Service\ReservationStrategyInterface;
 use App\Validation\ReservationValidator;
 use App\Validation\SalleValidator;
+use App\Session\SessionManager;
 use App\View\View;
 use FastRoute\Dispatcher;
 use Illuminate\Database\Capsule\Manager;
@@ -101,7 +102,13 @@ return [
             );
         }
     ),
+    SessionManager::class => autowire(),
 
+View::class => factory(function (): View {
+    return new View(
+        dirname(__DIR__) . '/templates'
+    );
+}),
     View::class => factory(function (): View {
         return new View(
             dirname(__DIR__) . '/templates'

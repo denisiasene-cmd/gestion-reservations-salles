@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title><?= e($title ?? 'Réservation de salles') ?></title>
+    <title><?= e_html($title ?? 'Réservation de salles') ?></title>
 
     <link rel="stylesheet" href="/assets/style.css">
 </head>
@@ -33,13 +33,13 @@
 
         <?php if (!empty($success)): ?>
             <div class="alert alert-success">
-                <?= e($success) ?>
+                <?= e_html($success) ?>
             </div>
         <?php endif; ?>
 
         <?php if (!empty($error)): ?>
             <div class="alert alert-error">
-                <?= e($error) ?>
+                <?= e_html($error) ?>
             </div>
         <?php endif; ?>
 

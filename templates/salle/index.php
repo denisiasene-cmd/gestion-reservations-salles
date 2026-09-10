@@ -39,25 +39,25 @@
                 <div class="card-body">
 
                     <h2 class="salle-name">
-                        <?= e($salle->nom) ?>
+                        <?= e_html($salle->nom) ?>
                     </h2>
 
                     <p class="salle-info">
                         Bâtiment :
-                        <?= e($salle->batiment) ?>
+                        <?= e_html($salle->batiment) ?>
                     </p>
 
                     <p class="salle-info">
                         Capacité :
                         <strong>
-                            <?= e($salle->capacite) ?>
+                            <?= e_html($salle->capacite) ?>
                         </strong>
                         personnes
                     </p>
 
                     <p class="salle-info">
                         Type :
-                        <?= e($salle->type) ?>
+                        <?= e_html($salle->type) ?>
                     </p>
 
                     <?php if ($salle->active): ?>
@@ -79,14 +79,14 @@
                 <div class="card-footer">
 
                     <a
-                        href="/salles/<?= e($salle->id) ?>"
+                        href="/salles/<?= e_html($salle->id) ?>"
                         class="btn btn-outline"
                     >
                         Détails
                     </a>
 
                     <a
-                        href="/salles/<?= e($salle->id) ?>/edit"
+                        href="/salles/<?= e_html($salle->id) ?>/edit"
                         class="btn btn-secondary"
                     >
                         Modifier

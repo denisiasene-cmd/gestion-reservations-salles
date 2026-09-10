@@ -28,7 +28,7 @@ $modification = isset($salle);
 
             <form
                 action="<?= $modification
-                    ? '/salles/' . e($salle->id) . '/edit'
+                    ? '/salles/' . e_html($salle->id) . '/edit'
                     : '/salles' ?>"
                 method="POST"
             >
@@ -44,7 +44,7 @@ $modification = isset($salle);
                         id="nom"
                         name="nom"
                         class="form-control"
-                        value="<?= e(
+                        value="<?= e_html(
                             $old['nom']
                             ?? $salle->nom
                             ?? ''
@@ -53,7 +53,7 @@ $modification = isset($salle);
 
                     <?php if (isset($errors['nom'])): ?>
                         <div class="error-message">
-                            <?= e($errors['nom'][0] ?? '') ?>
+                            <?= e_html($errors['nom'][0] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -70,7 +70,7 @@ $modification = isset($salle);
                         id="batiment"
                         name="batiment"
                         class="form-control"
-                        value="<?= e(
+                        value="<?= e_html(
                             $old['batiment']
                             ?? $salle->batiment
                             ?? ''
@@ -79,7 +79,7 @@ $modification = isset($salle);
 
                     <?php if (isset($errors['batiment'])): ?>
                         <div class="error-message">
-                            <?= e($errors['batiment'][0] ?? '') ?>
+                            <?= e_html($errors['batiment'][0] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -96,7 +96,7 @@ $modification = isset($salle);
                         id="capacite"
                         name="capacite"
                         class="form-control"
-                        value="<?= e(
+                        value="<?= e_html(
                             $old['capacite']
                             ?? $salle->capacite
                             ?? ''
@@ -105,7 +105,7 @@ $modification = isset($salle);
 
                     <?php if (isset($errors['capacite'])): ?>
                         <div class="error-message">
-                            <?= e($errors['capacite'][0] ?? '') ?>
+                            <?= e_html($errors['capacite'][0] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -142,7 +142,7 @@ $modification = isset($salle);
                         <?php foreach ($types as $valeur => $libelle): ?>
 
                             <option
-                                value="<?= e($valeur) ?>"
+                                value="<?= e_html($valeur) ?>"
                                 <?= (
                                     $old['type']
                                     ?? $salle->type
@@ -151,7 +151,7 @@ $modification = isset($salle);
                                     ? 'selected'
                                     : '' ?>
                             >
-                                <?= e($libelle) ?>
+                                <?= e_html($libelle) ?>
                             </option>
 
                         <?php endforeach; ?>
@@ -160,7 +160,7 @@ $modification = isset($salle);
 
                     <?php if (isset($errors['type'])): ?>
                         <div class="error-message">
-                            <?= e($errors['type'][0] ?? '') ?>
+                            <?= e_html($errors['type'][0] ?? '') ?>
                         </div>
                     <?php endif; ?>
 

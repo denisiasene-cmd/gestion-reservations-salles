@@ -10,7 +10,7 @@
         <div class="card-header">
 
             <h1>
-                <?= e($salle->nom) ?>
+                <?= e_html($salle->nom) ?>
             </h1>
 
         </div>
@@ -20,13 +20,13 @@
             <dl class="detail-list">
 
                 <dt>Bâtiment</dt>
-                <dd><?= e($salle->batiment) ?></dd>
+                <dd><?= e_html($salle->batiment) ?></dd>
 
                 <dt>Capacité</dt>
-                <dd><?= e($salle->capacite) ?> personnes</dd>
+                <dd><?= e_html($salle->capacite) ?> personnes</dd>
 
                 <dt>Type</dt>
-                <dd><?= e($salle->type) ?></dd>
+                <dd><?= e_html($salle->type) ?></dd>
 
                 <dt>Statut</dt>
 
@@ -62,7 +62,7 @@
             </a>
 
             <a
-                href="/salles/<?= e($salle->id) ?>/edit"
+                href="/salles/<?= e_html($salle->id) ?>/edit"
                 class="btn btn-secondary"
             >
                 Modifier

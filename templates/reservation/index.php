@@ -17,6 +17,11 @@
     </a>
 
 </div>
+<?php if (!empty($success)): ?>
+    <div class="alert alert-success">
+        <?= e_html($success) ?>
+    </div>
+<?php endif; ?>
 
 <?php if (empty($reservations)): ?>
 
@@ -55,28 +60,28 @@
 
                     <tr>
 
-                        <td><?= e($reservation->id) ?></td>
+                        <td><?= e_html($reservation->id) ?></td>
 
                         <td>
-                            <?= e(
+                            <?= e_html(
                                 $reservation->salle->nom
                                 ?? 'Salle #' . $reservation->salle_id
                             ) ?>
                         </td>
 
                         <td>
-                            <?= e($reservation->responsable) ?>
+                            <?= e_html($reservation->responsable) ?>
                             <br>
                             <small>
-                                <?= e($reservation->email) ?>
+                                <?= e_html($reservation->email) ?>
                             </small>
                         </td>
 
-                        <td><?= e($reservation->motif) ?></td>
+                        <td><?= e_html($reservation->motif) ?></td>
 
-                        <td><?= e($reservation->date_debut) ?></td>
+                        <td><?= e_html($reservation->date_debut) ?></td>
 
-                        <td><?= e($reservation->date_fin) ?></td>
+                        <td><?= e_html($reservation->date_fin) ?></td>
 
                         <td>
 
@@ -99,7 +104,7 @@
                         <td>
 
                             <a
-                                href="/reservations/<?= e($reservation->id) ?>"
+                                href="/reservations/<?= e_html($reservation->id) ?>"
                                 class="btn btn-outline"
                             >
                                 Détails

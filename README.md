@@ -107,3 +107,15 @@ Pour éviter que toutes les classes dépendent du conteneur.
 ### Quel anti-pattern apparaît si toutes les classes interrogent le conteneur ?
 Le Service Locator : les classes vont chercher elles-mêmes leurs dépendances dans le conteneur.
 
+### Quelle différence existe entre injection et conteneur ?
+ Injection : on donne à une classe ce dont elle a besoin.
+ Conteneur : il crée et fournit ces objets.
+### Qu’est-ce que l’autowiring ?
+PHP-DI trouve automatiquement les dépendances d'une classe.
+### Pourquoi les interfaces nécessitent-elles une définition ?
+Parce qu'une interface ne peut pas être créée directement. Il faut dire quelle classe utiliser.
+### Pourquoi limiter $container->get() au point d’entrée ?
+Pour éviter que toutes les classes dépendent du conteneur.
+### Quel anti-pattern apparaît si toutes les classes interrogent le conteneur ?
+Le Service Locator : les classes vont chercher elles-mêmes leurs dépendances dans le conteneur.
+

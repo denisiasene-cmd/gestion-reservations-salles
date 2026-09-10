@@ -37,14 +37,14 @@ $errors = $errors ?? [];
                             <?php if ($salle->active): ?>
 
                                 <option
-                                    value="<?= e($salle->id) ?>"
+                                    value="<?= e_html($salle->id) ?>"
                                     <?= ($old['salle_id'] ?? '') == $salle->id
                                         ? 'selected'
                                         : '' ?>
                                 >
-                                    <?= e($salle->nom) ?>
-                                    — <?= e($salle->batiment) ?>
-                                    (<?= e($salle->capacite) ?> places)
+                                    <?= e_html($salle->nom) ?>
+                                    — <?= e_html($salle->batiment) ?>
+                                    (<?= e_html($salle->capacite) ?> places)
                                 </option>
 
                             <?php endif; ?>
@@ -55,7 +55,7 @@ $errors = $errors ?? [];
 
                     <?php if (isset($errors['salle_id'])): ?>
                         <div class="error-message">
-                            <?= e($errors['salle_id'][0] ?? '') ?>
+                            <?= e_html($errors['salle_id'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -72,12 +72,12 @@ $errors = $errors ?? [];
                         id="responsable"
                         name="responsable"
                         class="form-control"
-                        value="<?= e($old['responsable'] ?? '') ?>"
+                        value="<?= e_html($old['responsable'] ?? '') ?>"
                     >
 
                     <?php if (isset($errors['responsable'])): ?>
                         <div class="error-message">
-                            <?= e($errors['responsable'][0] ?? '') ?>
+                            <?= e_html($errors['responsable'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -94,12 +94,12 @@ $errors = $errors ?? [];
                         id="email"
                         name="email"
                         class="form-control"
-                        value="<?= e($old['email'] ?? '') ?>"
+                        value="<?= e_html($old['email'] ?? '') ?>"
                     >
 
                     <?php if (isset($errors['email'])): ?>
                         <div class="error-message">
-                            <?= e($errors['email'][0] ?? '') ?>
+                            <?= e_html($errors['email'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -115,11 +115,11 @@ $errors = $errors ?? [];
                         id="motif"
                         name="motif"
                         class="form-control"
-                    ><?= e($old['motif'] ?? '') ?></textarea>
+                    ><?= e_html($old['motif'] ?? '') ?></textarea>
 
                     <?php if (isset($errors['motif'])): ?>
                         <div class="error-message">
-                            <?= e($errors['motif'][0] ?? '') ?>
+                            <?= e_html($errors['motif'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -136,12 +136,12 @@ $errors = $errors ?? [];
                         id="date_debut"
                         name="date_debut"
                         class="form-control"
-                        value="<?= e($old['date_debut'] ?? '') ?>"
+                        value="<?= e_html($old['date_debut'] ?? '') ?>"
                     >
 
                     <?php if (isset($errors['date_debut'])): ?>
                         <div class="error-message">
-                            <?= e($errors['date_debut'][0] ?? '') ?>
+                            <?= e_html($errors['date_debut'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -158,12 +158,12 @@ $errors = $errors ?? [];
                         id="date_fin"
                         name="date_fin"
                         class="form-control"
-                        value="<?= e($old['date_fin'] ?? '') ?>"
+                        value="<?= e_html($old['date_fin'] ?? '') ?>"
                     >
 
                     <?php if (isset($errors['date_fin'])): ?>
                         <div class="error-message">
-                            <?= e($errors['date_fin'][0] ?? '') ?>
+                            <?= e_html($errors['date_fin'] ?? '') ?>
                         </div>
                     <?php endif; ?>
 
@@ -191,4 +191,3 @@ $errors = $errors ?? [];
     </div>
 
 </div>
-

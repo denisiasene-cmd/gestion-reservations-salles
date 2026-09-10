@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use App\DTO\CreerReservationDTO;
 use App\Exception\SalleIndisponibleException;
+use App\Exception\SalleIntrouvableException;
 use App\Model\Reservation;
 use App\Model\Salle;
 use App\Repository\ReservationRepositoryInterface;
@@ -121,7 +122,7 @@ class ReservationServiceTest extends TestCase
             new \DateTimeImmutable('+1 day 12:00')
         );
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(SalleIntrouvableException::class);
 
         $service->creer($dto);
     }

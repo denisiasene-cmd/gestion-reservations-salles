@@ -6,10 +6,12 @@ namespace App\Controller;
 
 use App\DTO\CreerReservationDTO;
 use App\Exception\SalleIndisponibleException;
+use App\Exception\SalleIntrouvableException;
 use App\Repository\ReservationRepositoryInterface;
 use App\Repository\SalleRepositoryInterface;
 use App\Service\ReservationServiceInterface;
 use App\Validation\ReservationValidator;
+use App\Session\SessionManager;
 use App\View\View;
 
 class ReservationController
@@ -19,16 +21,21 @@ class ReservationController
         private SalleRepositoryInterface $salleRepository,
         private ReservationValidator $validator,
         private ReservationServiceInterface $reservationService,
+        private SessionManager $session,
         private View $view
     ) {
     }
 
     public function index(): void
     {
+        $success = $this->session->get('success');
+        $this->session->remove('success');
+
         $reservations = $this->reservationRepository->findAll();
 
         $this->view->render('reservation/index', [
-            'reservations' => $reservations
+            'reservations' => $reservations,
+            'success' => $success
         ]);
     }
 
@@ -64,6 +71,10 @@ class ReservationController
     {
         $data = $_POST;
 
+        if (isset($data['salle_id'])) {
+            $data['salle_id'] = (int) $data['salle_id'];
+        }
+
         $result = $this->validator->validate($data);
 
         if (!$result->isValid()) {
@@ -90,6 +101,11 @@ class ReservationController
 
             $this->reservationService->creer($dto);
 
+            $this->session->set(
+                'success',
+                'Réservation créée avec succès.'
+            );
+
             header('Location: /reservations');
 
             exit;
@@ -106,6 +122,17 @@ class ReservationController
             return;
 
         } catch (SalleIndisponibleException $e) {
+            $this->view->render('reservation/form', [
+                'salles' => $this->salleRepository->findAll(),
+                'errors' => [
+                    'salle_id' => [$e->getMessage()]
+                ],
+                'old' => $data
+            ]);
+
+            return;
+
+        } catch (SalleIntrouvableException $e) {
             $this->view->render('reservation/form', [
                 'salles' => $this->salleRepository->findAll(),
                 'errors' => [
@@ -135,33 +162,34 @@ class ReservationController
             return;
         }
     }
+
     public function apiIndex(): void
-{
-    $reservations = $this->reservationRepository->findAll();
-
-    header('Content-Type: application/json; charset=utf-8');
-
-    echo json_encode($reservations);
-}
-public function apiShow(int $id): void
-{
-    $reservation = $this->reservationRepository->findById($id);
-
-    if ($reservation === null) {
-        http_response_code(404);
+    {
+        $reservations = $this->reservationRepository->findAll();
 
         header('Content-Type: application/json; charset=utf-8');
 
-        echo json_encode([
-            'message' => 'Réservation introuvable'
-        ]);
-
-        return;
+        echo json_encode($reservations);
     }
 
-    header('Content-Type: application/json; charset=utf-8');
+    public function apiShow(int $id): void
+    {
+        $reservation = $this->reservationRepository->findById($id);
 
-    echo json_encode($reservation);
-}
-}
+        if ($reservation === null) {
+            http_response_code(404);
 
+            header('Content-Type: application/json; charset=utf-8');
+
+            echo json_encode([
+                'message' => 'Réservation introuvable'
+            ]);
+
+            return;
+        }
+
+        header('Content-Type: application/json; charset=utf-8');
+
+        echo json_encode($reservation);
+    }
+}

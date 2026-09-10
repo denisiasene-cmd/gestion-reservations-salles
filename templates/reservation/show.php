@@ -9,7 +9,7 @@
 
         <div class="card-header">
             <h1>
-                Réservation #<?= e($reservation->id) ?>
+                Réservation #<?= e_html($reservation->id) ?>
             </h1>
         </div>
 
@@ -19,26 +19,26 @@
 
                 <dt>Salle</dt>
                 <dd>
-                    <?= e(
+                    <?= e_html(
                         $reservation->salle->nom
                         ?? 'Salle #' . $reservation->salle_id
                     ) ?>
                 </dd>
 
                 <dt>Responsable</dt>
-                <dd><?= e($reservation->responsable) ?></dd>
+                <dd><?= e_html($reservation->responsable) ?></dd>
 
                 <dt>Email</dt>
-                <dd><?= e($reservation->email) ?></dd>
+                <dd><?= e_html($reservation->email) ?></dd>
 
                 <dt>Motif</dt>
-                <dd><?= e($reservation->motif) ?></dd>
+                <dd><?= e_html($reservation->motif) ?></dd>
 
                 <dt>Date de début</dt>
-                <dd><?= e($reservation->date_debut) ?></dd>
+                <dd><?= e_html($reservation->date_debut) ?></dd>
 
                 <dt>Date de fin</dt>
-                <dd><?= e($reservation->date_fin) ?></dd>
+                <dd><?= e_html($reservation->date_fin) ?></dd>
 
                 <dt>Statut</dt>
 
@@ -76,7 +76,7 @@
             <?php if ($reservation->statut === 'confirmée'): ?>
 
                 <form
-                    action="/reservations/<?= e($reservation->id) ?>/cancel"
+                    action="/reservations/<?= e_html($reservation->id) ?>/cancel"
                     method="POST"
                     style="display: inline;"
                 >
