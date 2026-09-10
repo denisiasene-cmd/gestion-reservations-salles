@@ -29,6 +29,14 @@ class SalleController
             'salles' => $salles
         ]);
     }
+    public function apiIndex(): void
+{
+    $salles = $this->salleRepository->findAll();
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode($salles);
+}
 
     public function show(int $id): void
     {
@@ -41,11 +49,32 @@ class SalleController
 
             return;
         }
-
         $this->view->render('salle/show', [
             'salle' => $salle
         ]);
     }
+
+     public function apiShow(int $id): void{
+
+    $salle = $this->salleRepository->findById($id);
+
+    if ($salle === null) {
+        http_response_code(404);
+
+        header('Content-Type: application/json; charset=utf-8');
+
+        echo json_encode([
+            'message' => 'Salle introuvable'
+        ]);
+
+        return;
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode($salle);
+}
+
 
     public function create(): void
     {
@@ -95,8 +124,6 @@ class SalleController
         $salle->active = $dto->active;
 
         $this->salleRepository->save($salle);
-
-      
 
         header('Location: /salles');
 

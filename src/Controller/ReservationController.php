@@ -135,5 +135,33 @@ class ReservationController
             return;
         }
     }
+    public function apiIndex(): void
+{
+    $reservations = $this->reservationRepository->findAll();
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode($reservations);
+}
+public function apiShow(int $id): void
+{
+    $reservation = $this->reservationRepository->findById($id);
+
+    if ($reservation === null) {
+        http_response_code(404);
+
+        header('Content-Type: application/json; charset=utf-8');
+
+        echo json_encode([
+            'message' => 'Réservation introuvable'
+        ]);
+
+        return;
+    }
+
+    header('Content-Type: application/json; charset=utf-8');
+
+    echo json_encode($reservation);
+}
 }
 
