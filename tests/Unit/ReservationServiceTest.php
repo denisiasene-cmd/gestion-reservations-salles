@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 namespace Tests\Unit;
 
 use App\DTO\CreerReservationDTO;
@@ -10,6 +11,12 @@ use App\Model\Salle;
 use App\Repository\ReservationRepositoryInterface;
 use App\Repository\SalleRepositoryInterface;
 use App\Service\ReservationService;
+use App\Service\ReservationStrategy\DateFutureStrategy;
+use App\Service\ReservationStrategy\DatesValidesStrategy;
+use App\Service\ReservationStrategy\DureeMaxStrategy;
+use App\Service\ReservationStrategy\PasDeConflitStrategy;
+use App\Service\ReservationStrategy\SalleActiveStrategy;
+use App\Service\ReservationStrategy\SalleExisteStrategy;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use PHPUnit\Framework\TestCase;
 
@@ -28,6 +35,25 @@ class ReservationServiceTest extends TestCase
 
         $capsule->setAsGlobal();
         $capsule->bootEloquent();
+    }
+
+    private function creerService(
+        SalleRepositoryInterface $salleRepository,
+        ReservationRepositoryInterface $reservationRepository
+    ): ReservationService {
+        $strategies = [
+            new SalleExisteStrategy($salleRepository),
+            new SalleActiveStrategy($salleRepository),
+            new DatesValidesStrategy(),
+            new DureeMaxStrategy(),
+            new DateFutureStrategy(),
+            new PasDeConflitStrategy($reservationRepository),
+        ];
+
+        return new ReservationService(
+            $reservationRepository,
+            $strategies
+        );
     }
 
     public function testReservationValide(): void
@@ -53,7 +79,7 @@ class ReservationServiceTest extends TestCase
                 fn (Reservation $reservation): Reservation => $reservation
             );
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -81,7 +107,7 @@ class ReservationServiceTest extends TestCase
             ->method('findById')
             ->willReturn(null);
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -113,7 +139,7 @@ class ReservationServiceTest extends TestCase
             ->method('findById')
             ->willReturn($salle);
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -145,7 +171,7 @@ class ReservationServiceTest extends TestCase
             ->method('findById')
             ->willReturn($salle);
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -177,7 +203,7 @@ class ReservationServiceTest extends TestCase
             ->method('findById')
             ->willReturn($salle);
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -209,7 +235,7 @@ class ReservationServiceTest extends TestCase
             ->method('findById')
             ->willReturn($salle);
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -245,7 +271,7 @@ class ReservationServiceTest extends TestCase
             ->method('findConflict')
             ->willReturn(new Reservation());
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -287,7 +313,7 @@ class ReservationServiceTest extends TestCase
                 fn (Reservation $reservation): Reservation => $reservation
             );
 
-        $service = new ReservationService(
+        $service = $this->creerService(
             $salleRepository,
             $reservationRepository
         );
@@ -306,4 +332,3 @@ class ReservationServiceTest extends TestCase
         $this->assertInstanceOf(Reservation::class, $reservation);
     }
 }
-

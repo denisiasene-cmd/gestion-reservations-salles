@@ -5,61 +5,21 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\DTO\CreerReservationDTO;
-use App\Exception\SalleIndisponibleException;
 use App\Model\Reservation;
 use App\Repository\ReservationRepositoryInterface;
-use App\Repository\SalleRepositoryInterface;
 
 class ReservationService implements ReservationServiceInterface
 {
     public function __construct(
-        private SalleRepositoryInterface $salleRepository,
-        private ReservationRepositoryInterface $reservationRepository
+        private ReservationRepositoryInterface $reservationRepository,
+        private array $strategies
     ) {
     }
 
     public function creer(CreerReservationDTO $dto): Reservation
     {
-        $salle = $this->salleRepository->findById($dto->salleId);
-
-        if ($salle === null) {
-            throw new \RuntimeException('Salle introuvable.');
-        }
-
-      if (!$salle->active) {
-    throw new SalleIndisponibleException('La salle est inactive.');
-}
-
-        if ($dto->dateDebut >= $dto->dateFin) {
-            throw new \InvalidArgumentException(
-                'La date de début doit être avant la date de fin.'
-            );
-        }
-
-        $duree = $dto->dateFin->getTimestamp() - $dto->dateDebut->getTimestamp();
-
-        if ($duree > 4 * 60 * 60) {
-            throw new \InvalidArgumentException(
-                'La réservation ne peut pas dépasser 4 heures.'
-            );
-        }
-
-        if ($dto->dateDebut <= new \DateTimeImmutable()) {
-            throw new \InvalidArgumentException(
-                'La réservation doit commencer dans le futur.'
-            );
-        }
-
-        $conflit = $this->reservationRepository->findConflict(
-            $dto->salleId,
-            $dto->dateDebut,
-            $dto->dateFin
-        );
-
-        if ($conflit !== null) {
-            throw new SalleIndisponibleException(
-                'La salle est déjà réservée sur cette période.'
-            );
+        foreach ($this->strategies as $strategy) {
+            $strategy->verifier($dto);
         }
 
         $reservation = new Reservation();
@@ -86,4 +46,3 @@ class ReservationService implements ReservationServiceInterface
         return $this->reservationRepository->cancel($reservation);
     }
 }
-
