@@ -71,7 +71,6 @@ Non, surtout pour une petite application.
 ### Quel avantage apporte-t-elle ?
 Elle rend le code plus organisé et plus facile à modifier et tester.
 
-
 ### Pourquoi ces règles ne sont-elles pas dans le contrôleur ?
 Parce que le contrôleur doit gérer HTTP, pas les règles métier.
 ### Pourquoi le service dépend-il d’une interface de Repository ?
@@ -80,3 +79,31 @@ Pour séparer le métier de l’accès aux données.
 SalleIndisponibleException.
 ### Comment tester le service sans MySQL ?
  En utilisant des repositories simulés (mocks).
+
+
+### Pourquoi FastRoute ne construit-il pas lui-même le contrôleur ?
+Parce que FastRoute sert seulement à trouver quelle route correspond à l’URL.
+C’est PHP-DI qui construit le contrôleur.
+### Quelle différence existe entre 404 et 405 ?
+404  la route n’existe pas.
+405  la route existe, mais la méthode HTTP utilisée n’est pas autorisée.
+### Pourquoi contraindre {id} avec \d+ ?
+\d+ signifie un ou plusieurs chiffres.
+Donc /salles/5 est accepté, mais /salles/abc ne l’est pas
+### Quel composant doit interpréter le handler retourné ?
+Qui interprète le handler retourné par FastRoute ?
+C’est public/index.php.
+Il récupère le contrôleur avec PHP-DI, puis appelle la bonne méthode.
+
+### Quelle différence existe entre injection et conteneur ?
+ Injection : on donne à une classe ce dont elle a besoin.
+ Conteneur : il crée et fournit ces objets.
+### Qu’est-ce que l’autowiring ?
+PHP-DI trouve automatiquement les dépendances d'une classe.
+### Pourquoi les interfaces nécessitent-elles une définition ?
+Parce qu'une interface ne peut pas être créée directement. Il faut dire quelle classe utiliser.
+### Pourquoi limiter $container->get() au point d’entrée ?
+Pour éviter que toutes les classes dépendent du conteneur.
+### Quel anti-pattern apparaît si toutes les classes interrogent le conteneur ?
+Le Service Locator : les classes vont chercher elles-mêmes leurs dépendances dans le conteneur.
+

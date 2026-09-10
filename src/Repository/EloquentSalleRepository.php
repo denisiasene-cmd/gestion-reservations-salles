@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\Salle;
+use Illuminate\Database\Capsule\Manager;
 
 class EloquentSalleRepository implements SalleRepositoryInterface
 {
+    public function __construct(
+        private Manager $database
+    ) {
+    }
+
     public function findAll(): array
     {
         return Salle::query()->get()->all();
@@ -25,4 +31,3 @@ class EloquentSalleRepository implements SalleRepositoryInterface
         return $salle;
     }
 }
-

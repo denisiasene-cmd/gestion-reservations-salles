@@ -5,9 +5,15 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Model\Reservation;
+use Illuminate\Database\Capsule\Manager;
 
 class EloquentReservationRepository implements ReservationRepositoryInterface
 {
+    public function __construct(
+        private Manager $database
+    ) {
+    }
+
     public function findAll(): array
     {
         return Reservation::query()->get()->all();
