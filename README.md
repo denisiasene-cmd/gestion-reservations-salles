@@ -62,4 +62,21 @@ Avant de créer le DTO, après avoir validé les données.
 ### Le DTO doit-il contenir la règle de chevauchement ? 
 Le chevauchement est une règle métier, donc il sera géré par le service.
 
+### Eloquent constitue-t-il déjà un accès aux données ? 
+Oui, Eloquent permet d'accéder à la base de données.
+### Pourquoi ajouter un Repository au-dessus d’Eloquent ?
+Pour séparer l'accès aux données du reste de l'application.
+### Cette abstraction est-elle toujours nécessaire ?
+Non, surtout pour une petite application.
+### Quel avantage apporte-t-elle ?
+Elle rend le code plus organisé et plus facile à modifier et tester.
 
+
+### Pourquoi ces règles ne sont-elles pas dans le contrôleur ?
+Parce que le contrôleur doit gérer HTTP, pas les règles métier.
+### Pourquoi le service dépend-il d’une interface de Repository ?
+Pour séparer le métier de l’accès aux données.
+### Quelle exception doit être levée en cas de conflit ?
+SalleIndisponibleException.
+### Comment tester le service sans MySQL ?
+ En utilisant des repositories simulés (mocks).
