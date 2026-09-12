@@ -44,27 +44,32 @@ use function DI\factory;
 use function DI\get;
 use function FastRoute\simpleDispatcher;
 
-\Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
+\Dotenv\Dotenv::createImmutable(dirname(__DIR__))->safeLoad();
+
 
 return [
 
     Manager::class => factory(function (): Manager {
-        $capsule = new Manager();
+    $capsule = new Manager();
 
-        $capsule->addConnection([
-            'driver' => $_ENV['DB_DRIVER'],
-            'host' => $_ENV['DB_HOST'],
-            'port' => $_ENV['DB_PORT'],
-            'database' => $_ENV['DB_DATABASE'],
-            'username' => $_ENV['DB_USERNAME'],
-            'password' => $_ENV['DB_PASSWORD'],
-        ]);
+    $capsule->addConnection([
+        'driver' => $_ENV['DB_DRIVER'],
+        'host' => $_ENV['DB_HOST'],
+        'port' => $_ENV['DB_PORT'],
+        'database' => $_ENV['DB_DATABASE'],
+        'username' => $_ENV['DB_USERNAME'],
+        'password' => $_ENV['DB_PASSWORD'],
+        'options' => [
+            \PDO::MYSQL_ATTR_SSL_CA => dirname(__DIR__) . '/config/certs/ca.pem',
+            \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+        ],
+    ]);
 
-        $capsule->setAsGlobal();
-        $capsule->bootEloquent();
+    $capsule->setAsGlobal();
+    $capsule->bootEloquent();
 
-        return $capsule;
-    }),
+    return $capsule;
+}),
 
     SalleRepositoryInterface::class => autowire(EloquentSalleRepository::class),
     ReservationRepositoryInterface::class => autowire(EloquentReservationRepository::class),

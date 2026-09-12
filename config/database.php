@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 use Dotenv\Dotenv;
@@ -20,9 +21,14 @@ $capsule->addConnection([
     'charset' => 'utf8mb4',
     'collation' => 'utf8mb4_unicode_ci',
     'prefix' => '',
+    'options' => [
+        \PDO::MYSQL_ATTR_SSL_CA => $racine . '/config/certs/ca.pem',
+        \PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => true,
+    ],
 ]);
 
 $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 return $capsule;
+
