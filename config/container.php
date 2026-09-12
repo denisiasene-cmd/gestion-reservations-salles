@@ -6,6 +6,7 @@ use App\Application;
 use App\Controller\AuthController;
 use App\Controller\ReservationController;
 use App\Controller\SalleController;
+use App\Middleware\AuthenticationMiddleware;
 use App\Repository\EloquentReservationRepository;
 use App\Repository\EloquentSalleRepository;
 use App\Repository\EloquentUserRepository;
@@ -103,6 +104,8 @@ return [
     SalleServiceInterface::class => autowire(SalleService::class),
     AuthentificationServiceInterface::class => autowire(AuthentificationService::class),
     SessionManagerInterface::class => autowire(SessionManager::class),
+
+    AuthenticationMiddleware::class => autowire(),
 
     ViewInterface::class => factory(function (): ViewInterface {
         $driver = strtolower($_ENV['VIEW_DRIVER'] ?? 'html');

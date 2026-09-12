@@ -5,7 +5,7 @@ use App\Controller\SalleController;
 use App\Controller\ReservationController;
 
 return function (FastRoute\RouteCollector $routes): void {
-
+     $routes->addRoute('GET', '/', [SalleController::class, 'index']);
     // Authentification
     $routes->addRoute('GET', '/register', [AuthController::class, 'register']);
     $routes->addRoute('POST', '/register', [AuthController::class, 'store']);
