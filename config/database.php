@@ -26,4 +26,3 @@ $capsule->setAsGlobal();
 $capsule->bootEloquent();
 
 return $capsule;
-

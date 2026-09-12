@@ -15,13 +15,17 @@ $modification = isset($salle);
     <div class="card">
 
         <div class="card-header">
-
             <h1>
                 <?= $modification
                     ? 'Modifier la salle'
                     : 'Créer une salle' ?>
             </h1>
 
+            <p>
+                <?= $modification
+                    ? 'Modifiez les informations de cette salle.'
+                    : 'Renseignez les informations de la nouvelle salle.' ?>
+            </p>
         </div>
 
         <div class="card-body">
@@ -59,6 +63,7 @@ $modification = isset($salle);
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="batiment" class="form-label">
@@ -84,6 +89,7 @@ $modification = isset($salle);
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -111,6 +117,7 @@ $modification = isset($salle);
 
                 </div>
 
+
                 <div class="form-group">
 
                     <label for="type" class="form-label">
@@ -128,7 +135,6 @@ $modification = isset($salle);
                         </option>
 
                         <?php
-
                         $types = [
                             'cours' => 'Cours',
                             'informatique' => 'Informatique',
@@ -136,7 +142,6 @@ $modification = isset($salle);
                             'amphitheatre' => 'Amphithéâtre',
                             'reunion' => 'Réunion'
                         ];
-
                         ?>
 
                         <?php foreach ($types as $valeur => $libelle): ?>
@@ -166,6 +171,7 @@ $modification = isset($salle);
 
                 </div>
 
+
                 <?php if ($modification): ?>
 
                     <div class="form-group">
@@ -175,7 +181,6 @@ $modification = isset($salle);
                         </label>
 
                         <label>
-
                             <input
                                 type="checkbox"
                                 name="active"
@@ -189,12 +194,12 @@ $modification = isset($salle);
                             >
 
                             Salle active
-
                         </label>
 
                     </div>
 
                 <?php endif; ?>
+
 
                 <div class="form-actions">
 
@@ -223,4 +228,3 @@ $modification = isset($salle);
     </div>
 
 </div>
-

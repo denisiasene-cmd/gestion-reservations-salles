@@ -13,6 +13,10 @@
                 <?= e_html($salle->nom) ?>
             </h1>
 
+            <p>
+                Informations détaillées de la salle
+            </p>
+
         </div>
 
         <div class="card-body">
@@ -73,4 +77,3 @@
     </div>
 
 </div>
-

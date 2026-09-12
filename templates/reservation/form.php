@@ -14,7 +14,15 @@ $errors = $errors ?? [];
     <div class="card">
 
         <div class="card-header">
-            <h1>Nouvelle réservation</h1>
+
+            <h1>
+                Nouvelle réservation
+            </h1>
+
+            <p>
+                Remplissez les informations pour réserver une salle.
+            </p>
+
         </div>
 
         <div class="card-body">
@@ -22,11 +30,16 @@ $errors = $errors ?? [];
             <form action="/reservations" method="POST">
 
                 <div class="form-group">
+
                     <label for="salle_id" class="form-label">
                         Salle
                     </label>
 
-                    <select id="salle_id" name="salle_id" class="form-select">
+                    <select
+                        id="salle_id"
+                        name="salle_id"
+                        class="form-select"
+                    >
 
                         <option value="">
                             -- Choisir une salle --
@@ -38,9 +51,7 @@ $errors = $errors ?? [];
 
                                 <option
                                     value="<?= e_html($salle->id) ?>"
-                                    <?= ($old['salle_id'] ?? '') == $salle->id
-                                        ? 'selected'
-                                        : '' ?>
+                                    <?= ($old['salle_id'] ?? '') == $salle->id ? 'selected' : '' ?>
                                 >
                                     <?= e_html($salle->nom) ?>
                                     — <?= e_html($salle->batiment) ?>
@@ -54,12 +65,15 @@ $errors = $errors ?? [];
                     </select>
 
                     <?php if (isset($errors['salle_id'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['salle_id'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -76,12 +90,15 @@ $errors = $errors ?? [];
                     >
 
                     <?php if (isset($errors['responsable'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['responsable'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -98,12 +115,15 @@ $errors = $errors ?? [];
                     >
 
                     <?php if (isset($errors['email'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['email'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -118,12 +138,15 @@ $errors = $errors ?? [];
                     ><?= e_html($old['motif'] ?? '') ?></textarea>
 
                     <?php if (isset($errors['motif'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['motif'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -140,12 +163,15 @@ $errors = $errors ?? [];
                     >
 
                     <?php if (isset($errors['date_debut'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['date_debut'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
+
 
                 <div class="form-group">
 
@@ -162,16 +188,22 @@ $errors = $errors ?? [];
                     >
 
                     <?php if (isset($errors['date_fin'])): ?>
+
                         <div class="error-message">
                             <?= e_html($errors['date_fin'] ?? '') ?>
                         </div>
+
                     <?php endif; ?>
 
                 </div>
 
+
                 <div class="form-actions">
 
-                    <a href="/reservations" class="btn btn-outline">
+                    <a
+                        href="/reservations"
+                        class="btn btn-outline"
+                    >
                         Annuler
                     </a>
 

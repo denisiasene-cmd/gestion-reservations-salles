@@ -16,8 +16,9 @@ class ReservationService implements ReservationServiceInterface
     ) {
     }
 
-    public function creer(CreerReservationDTO $dto): Reservation
-    {
+    public function creer(
+        CreerReservationDTO $dto
+    ): Reservation {
         foreach ($this->strategies as $strategy) {
             $strategy->verifier($dto);
         }
@@ -32,17 +33,45 @@ class ReservationService implements ReservationServiceInterface
         $reservation->date_fin = $dto->dateFin;
         $reservation->statut = 'confirmée';
 
-        return $this->reservationRepository->save($reservation);
+        return $this->reservationRepository->save(
+            $reservation
+        );
     }
 
-    public function annuler(int $id): Reservation
+    public function lister(
+        int $perPage = 2,
+        string $recherche = ''
+    ): mixed {
+        return $this->reservationRepository->paginate(
+            $perPage,
+            $recherche
+        );
+    }
+
+    public function trouver(
+        int $id
+    ): ?Reservation {
+        return $this->reservationRepository->findById($id);
+    }
+
+    public function listerToutes(): array
     {
+        return $this->reservationRepository->findAll();
+    }
+
+    public function annuler(
+        int $id
+    ): Reservation {
         $reservation = $this->reservationRepository->findById($id);
 
         if ($reservation === null) {
-            throw new \RuntimeException('Réservation introuvable.');
+            throw new \RuntimeException(
+                'Réservation introuvable.'
+            );
         }
 
-        return $this->reservationRepository->cancel($reservation);
+        return $this->reservationRepository->cancel(
+            $reservation
+        );
     }
 }

@@ -44,4 +44,3 @@ class SalleValidator implements ValidatorInterface
         );
     }
 }
-

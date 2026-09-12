@@ -3,12 +3,19 @@
 declare(strict_types=1);
 
 use App\Application;
+use App\Controller\AuthController;
 use App\Controller\ReservationController;
 use App\Controller\SalleController;
 use App\Repository\EloquentReservationRepository;
 use App\Repository\EloquentSalleRepository;
+use App\Repository\EloquentUserRepository;
 use App\Repository\ReservationRepositoryInterface;
 use App\Repository\SalleRepositoryInterface;
+use App\Repository\UserRepositoryInterface;
+use App\Router\FastRouteRouter;
+use App\Router\RouterInterface;
+use App\Service\AuthentificationService;
+use App\Service\AuthentificationServiceInterface;
 use App\Service\ReservationService;
 use App\Service\ReservationServiceInterface;
 use App\Service\ReservationStrategy\DateFutureStrategy;
@@ -18,15 +25,22 @@ use App\Service\ReservationStrategy\PasDeConflitStrategy;
 use App\Service\ReservationStrategy\SalleActiveStrategy;
 use App\Service\ReservationStrategy\SalleExisteStrategy;
 use App\Service\ReservationStrategyInterface;
+use App\Service\SalleService;
+use App\Service\SalleServiceInterface;
+use App\Session\SessionManager;
+use App\Session\SessionManagerInterface;
+use App\Validation\AuthValidator;
 use App\Validation\ReservationValidator;
 use App\Validation\SalleValidator;
-use App\Session\SessionManager;
-use App\View\View;
+use App\View\HtmlView;
+use App\View\JsonView;
+use App\View\ViewInterface;
 use FastRoute\Dispatcher;
 use Illuminate\Database\Capsule\Manager;
 use Psr\Container\ContainerInterface;
 use function DI\autowire;
 use function DI\factory;
+use function DI\get;
 use function FastRoute\simpleDispatcher;
 
 \Dotenv\Dotenv::createImmutable(dirname(__DIR__))->load();
@@ -51,35 +65,20 @@ return [
         return $capsule;
     }),
 
-    SalleRepositoryInterface::class =>
-        autowire(EloquentSalleRepository::class),
+    SalleRepositoryInterface::class => autowire(EloquentSalleRepository::class),
+    ReservationRepositoryInterface::class => autowire(EloquentReservationRepository::class),
+    UserRepositoryInterface::class => autowire(EloquentUserRepository::class),
 
-    ReservationRepositoryInterface::class =>
-        autowire(EloquentReservationRepository::class),
+    SalleValidator::class => autowire(),
+    ReservationValidator::class => autowire(),
+    AuthValidator::class => autowire(),
 
-    SalleValidator::class =>
-        autowire(),
-
-    ReservationValidator::class =>
-        autowire(),
-
-    SalleExisteStrategy::class =>
-        autowire(),
-
-    SalleActiveStrategy::class =>
-        autowire(),
-
-    DatesValidesStrategy::class =>
-        autowire(),
-
-    DureeMaxStrategy::class =>
-        autowire(),
-
-    DateFutureStrategy::class =>
-        autowire(),
-
-    PasDeConflitStrategy::class =>
-        autowire(),
+    SalleExisteStrategy::class => autowire(),
+    SalleActiveStrategy::class => autowire(),
+    DatesValidesStrategy::class => autowire(),
+    DureeMaxStrategy::class => autowire(),
+    DateFutureStrategy::class => autowire(),
+    PasDeConflitStrategy::class => autowire(),
 
     ReservationStrategyInterface::class => factory(
         function (ContainerInterface $container): array {
@@ -94,26 +93,27 @@ return [
         }
     ),
 
-    ReservationServiceInterface::class => factory(
-        function (ContainerInterface $container): ReservationService {
-            return new ReservationService(
-                $container->get(ReservationRepositoryInterface::class),
-                $container->get(ReservationStrategyInterface::class)
-            );
-        }
-    ),
-    SessionManager::class => autowire(),
+    // IMPORTANT : on indique à PHP-DI comment remplir $strategies
+    ReservationServiceInterface::class => autowire(ReservationService::class)
+        ->constructorParameter(
+            'strategies',
+            get(ReservationStrategyInterface::class)
+        ),
 
-View::class => factory(function (): View {
-    return new View(
-        dirname(__DIR__) . '/templates'
-    );
-}),
-    View::class => factory(function (): View {
-        return new View(
-            dirname(__DIR__) . '/templates'
-        );
+    SalleServiceInterface::class => autowire(SalleService::class),
+    AuthentificationServiceInterface::class => autowire(AuthentificationService::class),
+    SessionManagerInterface::class => autowire(SessionManager::class),
+
+    ViewInterface::class => factory(function (): ViewInterface {
+        $driver = strtolower($_ENV['VIEW_DRIVER'] ?? 'html');
+        $templatesPath = dirname(__DIR__) . '/templates';
+
+        return $driver === 'json'
+            ? new JsonView()
+            : new HtmlView($templatesPath);
     }),
+
+    JsonView::class => autowire(),
 
     Dispatcher::class => factory(function (): Dispatcher {
         $routes = require dirname(__DIR__) . '/routes/web.php';
@@ -121,21 +121,19 @@ View::class => factory(function (): View {
         return simpleDispatcher($routes);
     }),
 
-    SalleController::class =>
-        autowire(),
-
-    ReservationController::class =>
-        autowire(),
-
-    Application::class => factory(
-        function (ContainerInterface $container): Application {
-            return new Application(
+    RouterInterface::class => factory(
+        function (ContainerInterface $container): RouterInterface {
+            return new FastRouteRouter(
                 $container->get(Dispatcher::class),
-                $container->get(View::class),
-                function (string $controllerClass) use ($container): object {
-                    return $container->get($controllerClass);
-                }
+                $container,
+                $container->get(ViewInterface::class)
             );
         }
     ),
+
+    SalleController::class => autowire(),
+    ReservationController::class => autowire(),
+    AuthController::class => autowire(),
+
+    Application::class => autowire(),
 ];

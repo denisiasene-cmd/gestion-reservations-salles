@@ -1,13 +1,19 @@
 
 <?php
-/** @var array $salles */
+/** @var \Illuminate\Pagination\LengthAwarePaginator $salles */
 ?>
 
 <div class="page-header">
 
-    <h1 class="page-title">
-        Nos salles
-    </h1>
+    <div>
+        <h1 class="page-title">
+            Nos salles
+        </h1>
+
+        <p class="page-subtitle">
+            Découvrez les salles disponibles et leur capacité.
+        </p>
+    </div>
 
     <a
         href="/salles/create"
@@ -17,17 +23,30 @@
     </a>
 
 </div>
+<?php if ($salles->isEmpty()): ?>
 
-<?php if (empty($salles)): ?>
-
-    <div class="card">
+    <div class="card empty-state">
 
         <div class="card-body">
-            <p>Aucune salle n'est enregistrée.</p>
+
+            <h2>
+                Aucune salle
+            </h2>
+
+            <p>
+                Aucune salle n'est enregistrée pour le moment.
+            </p>
+
+            <a
+                href="/salles/create"
+                class="btn btn-primary"
+            >
+                Créer une salle
+            </a>
+
         </div>
 
     </div>
-
 <?php else: ?>
 
     <div class="salles-grid">
@@ -38,43 +57,74 @@
 
                 <div class="card-body">
 
-                    <h2 class="salle-name">
-                        <?= e_html($salle->nom) ?>
-                    </h2>
+                    <div class="salle-card-header">
 
-                    <p class="salle-info">
-                        Bâtiment :
-                        <?= e_html($salle->batiment) ?>
-                    </p>
+                        <h2 class="salle-name">
+                            <?= e_html($salle->nom) ?>
+                        </h2>
 
-                    <p class="salle-info">
-                        Capacité :
-                        <strong>
-                            <?= e_html($salle->capacite) ?>
-                        </strong>
-                        personnes
-                    </p>
+                        <?php if ($salle->active): ?>
 
-                    <p class="salle-info">
-                        Type :
-                        <?= e_html($salle->type) ?>
-                    </p>
+                            <span class="status status-active">
+                                Active
+                            </span>
 
-                    <?php if ($salle->active): ?>
+                        <?php else: ?>
 
-                        <span class="status status-active">
-                            Active
-                        </span>
+                            <span class="status status-inactive">
+                                Inactive
+                            </span>
 
-                    <?php else: ?>
+                        <?php endif; ?>
 
-                        <span class="status status-inactive">
-                            Inactive
-                        </span>
+                    </div>
 
-                    <?php endif; ?>
+
+                    <div class="salle-details">
+
+                        <p class="salle-info">
+
+                            <span>
+                                Bâtiment
+                            </span>
+
+                            <strong>
+                                <?= e_html($salle->batiment) ?>
+                            </strong>
+
+                        </p>
+
+
+                        <p class="salle-info">
+
+                            <span>
+                                Capacité
+                            </span>
+
+                            <strong>
+                                <?= e_html($salle->capacite) ?>
+                                personnes
+                            </strong>
+
+                        </p>
+
+
+                        <p class="salle-info">
+
+                            <span>
+                                Type
+                            </span>
+
+                            <strong>
+                                <?= e_html($salle->type) ?>
+                            </strong>
+
+                        </p>
+
+                    </div>
 
                 </div>
+
 
                 <div class="card-footer">
 
@@ -100,5 +150,44 @@
 
     </div>
 
-<?php endif; ?>
 
+    <div class="pagination">
+
+        <?php if ($salles->onFirstPage()): ?>
+
+            <span class="btn btn-secondary">
+                Précédent
+            </span>
+
+        <?php else: ?>
+
+            <a
+                href="<?= e_html($salles->previousPageUrl()) ?>"
+                class="btn btn-secondary"
+            >
+                Précédent
+            </a>
+
+        <?php endif; ?>
+
+
+        <?php if ($salles->hasMorePages()): ?>
+
+            <a
+                href="<?= e_html($salles->nextPageUrl()) ?>"
+                class="btn btn-primary"
+            >
+                Suivant
+            </a>
+
+        <?php else: ?>
+
+            <span class="btn btn-secondary">
+                Suivant
+            </span>
+
+        <?php endif; ?>
+
+    </div>
+
+<?php endif; ?>

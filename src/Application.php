@@ -4,76 +4,41 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\View\View;
-use FastRoute\Dispatcher;
+use App\Router\RouterInterface;
+use App\View\ViewInterface;
 
 final class Application
 {
     public function __construct(
-        private Dispatcher $dispatcher,
-        private View $view,
-        private \Closure $controllerResolver
+        private RouterInterface $router,
+        private ViewInterface $view
     ) {
     }
 
     public function run(): void
     {
         try {
-            $httpMethod = $_SERVER['REQUEST_METHOD'];
+            $uri = $_SERVER['REQUEST_URI'] ?? '/';
 
-            $uri = $_SERVER['REQUEST_URI'];
-
-            if (false !== $pos = strpos($uri, '?')) {
-                $uri = substr($uri, 0, $pos);
+            if (false !== $position = strpos($uri, '?')) {
+                $uri = substr($uri, 0, $position);
             }
 
-            $routeInfo = $this->dispatcher->dispatch(
-                $httpMethod,
+            $this->router->dispatch(
+                $_SERVER['REQUEST_METHOD'] ?? 'GET',
                 $uri
             );
-
-            switch ($routeInfo[0]) {
-
-                case Dispatcher::NOT_FOUND:
-                    http_response_code(404);
-                    $this->view->render('error/404');
-                    return;
-
-                case Dispatcher::METHOD_NOT_ALLOWED:
-                    http_response_code(405);
-                    echo 'Méthode HTTP non autorisée.';
-                    return;
-
-                case Dispatcher::FOUND:
-                    $handler = $routeInfo[1];
-                    $vars = $routeInfo[2];
-
-                    [$controllerClass, $method] = $handler;
-
-                    $controller = ($this->controllerResolver)(
-                        $controllerClass
-                    );
-
-                    $arguments = array_map(
-                        static fn ($value) =>
-                            ctype_digit($value)
-                                ? (int) $value
-                                : $value,
-                        array_values($vars)
-                    );
-
-                    $controller->{$method}(...$arguments);
-
-                    return;
-            }
-
         } catch (\Throwable $e) {
-
             http_response_code(500);
 
-            $this->view->render('error/500');
+            if (($_ENV['APP_DEBUG'] ?? 'false') === 'true') {
+                $this->view->render('error/500', [
+                    'message' => $e->getMessage(),
+                ]);
+                return;
+            }
 
-            return;
+            $this->view->render('error/500');
         }
     }
 }

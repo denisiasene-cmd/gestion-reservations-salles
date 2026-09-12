@@ -8,37 +8,63 @@
     <div class="card">
 
         <div class="card-header">
+
             <h1>
                 Réservation #<?= e_html($reservation->id) ?>
             </h1>
+
+            <p>
+                Informations détaillées de la réservation.
+            </p>
+
         </div>
+
 
         <div class="card-body">
 
             <dl class="detail-list">
 
                 <dt>Salle</dt>
+
                 <dd>
-                    <?= e_html(
-                        $reservation->salle->nom
-                        ?? 'Salle #' . $reservation->salle_id
-                    ) ?>
+                    <?= e_html($reservation->salle->nom ?? 'Salle #' . $reservation->salle_id) ?>
                 </dd>
 
+
                 <dt>Responsable</dt>
-                <dd><?= e_html($reservation->responsable) ?></dd>
+
+                <dd>
+                    <?= e_html($reservation->responsable) ?>
+                </dd>
+
 
                 <dt>Email</dt>
-                <dd><?= e_html($reservation->email) ?></dd>
+
+                <dd>
+                    <?= e_html($reservation->email) ?>
+                </dd>
+
 
                 <dt>Motif</dt>
-                <dd><?= e_html($reservation->motif) ?></dd>
+
+                <dd>
+                    <?= e_html($reservation->motif) ?>
+                </dd>
+
 
                 <dt>Date de début</dt>
-                <dd><?= e_html($reservation->date_debut) ?></dd>
+
+                <dd>
+                    <?= e_html($reservation->date_debut) ?>
+                </dd>
+
 
                 <dt>Date de fin</dt>
-                <dd><?= e_html($reservation->date_fin) ?></dd>
+
+                <dd>
+                    <?= e_html($reservation->date_fin) ?>
+                </dd>
+
 
                 <dt>Statut</dt>
 
@@ -64,6 +90,7 @@
 
         </div>
 
+
         <div class="card-footer">
 
             <a
@@ -72,6 +99,7 @@
             >
                 ← Retour aux réservations
             </a>
+
 
             <?php if ($reservation->statut === 'confirmée'): ?>
 
@@ -97,4 +125,3 @@
     </div>
 
 </div>
-

@@ -7,41 +7,48 @@ namespace App\Controller;
 use App\DTO\CreerReservationDTO;
 use App\Exception\SalleIndisponibleException;
 use App\Exception\SalleIntrouvableException;
-use App\Repository\ReservationRepositoryInterface;
-use App\Repository\SalleRepositoryInterface;
 use App\Service\ReservationServiceInterface;
+use App\Service\SalleServiceInterface;
+use App\Session\SessionManagerInterface;
 use App\Validation\ReservationValidator;
-use App\Session\SessionManager;
-use App\View\View;
+use App\View\JsonView;
+use App\View\ViewInterface;
 
-class ReservationController
+final class ReservationController
 {
     public function __construct(
-        private ReservationRepositoryInterface $reservationRepository,
-        private SalleRepositoryInterface $salleRepository,
-        private ReservationValidator $validator,
         private ReservationServiceInterface $reservationService,
-        private SessionManager $session,
-        private View $view
+        private SalleServiceInterface $salleService,
+        private ReservationValidator $validator,
+        private SessionManagerInterface $session,
+        private ViewInterface $view,
+        private JsonView $jsonView
     ) {
     }
 
     public function index(): void
     {
         $success = $this->session->get('success');
+
         $this->session->remove('success');
 
-        $reservations = $this->reservationRepository->findAll();
+        $recherche = trim(
+            (string) ($_GET['recherche'] ?? '')
+        );
 
         $this->view->render('reservation/index', [
-            'reservations' => $reservations,
-            'success' => $success
+            'reservations' => $this->reservationService->lister(
+                2,
+                $recherche
+            ),
+            'recherche' => $recherche,
+            'success' => $success,
         ]);
     }
 
     public function show(int $id): void
     {
-        $reservation = $this->reservationRepository->findById($id);
+        $reservation = $this->reservationService->trouver($id);
 
         if ($reservation === null) {
             http_response_code(404);
@@ -52,18 +59,16 @@ class ReservationController
         }
 
         $this->view->render('reservation/show', [
-            'reservation' => $reservation
+            'reservation' => $reservation,
         ]);
     }
 
     public function create(): void
     {
-        $salles = $this->salleRepository->findAll();
-
         $this->view->render('reservation/form', [
-            'salles' => $salles,
+            'salles' => $this->salleService->listerToutes(),
             'errors' => [],
-            'old' => []
+            'old' => [],
         ]);
     }
 
@@ -71,17 +76,17 @@ class ReservationController
     {
         $data = $_POST;
 
-        if (isset($data['salle_id'])) {
-            $data['salle_id'] = (int) $data['salle_id'];
-        }
+        $data['salle_id'] = isset($data['salle_id'])
+            ? (int) $data['salle_id']
+            : null;
 
         $result = $this->validator->validate($data);
 
         if (!$result->isValid()) {
             $this->view->render('reservation/form', [
-                'salles' => $this->salleRepository->findAll(),
+                'salles' => $this->salleService->listerToutes(),
                 'errors' => $result->errors(),
-                'old' => $data
+                'old' => $data,
             ]);
 
             return;
@@ -95,8 +100,12 @@ class ReservationController
                 $data['responsable'],
                 $data['email'],
                 $data['motif'],
-                new \DateTimeImmutable($data['date_debut']),
-                new \DateTimeImmutable($data['date_fin'])
+                new \DateTimeImmutable(
+                    $data['date_debut']
+                ),
+                new \DateTimeImmutable(
+                    $data['date_fin']
+                )
             );
 
             $this->reservationService->creer($dto);
@@ -109,39 +118,24 @@ class ReservationController
             header('Location: /reservations');
 
             exit;
+        } catch (
+            \InvalidArgumentException |
+            SalleIndisponibleException |
+            SalleIntrouvableException $e
+        ) {
+            $champ = $e instanceof \InvalidArgumentException
+                ? 'date_debut'
+                : 'salle_id';
 
-        } catch (\InvalidArgumentException $e) {
             $this->view->render('reservation/form', [
-                'salles' => $this->salleRepository->findAll(),
+                'salles' => $this->salleService->listerToutes(),
                 'errors' => [
-                    'date_debut' => [$e->getMessage()]
+                    $champ => [
+                        $e->getMessage(),
+                    ],
                 ],
-                'old' => $data
+                'old' => $data,
             ]);
-
-            return;
-
-        } catch (SalleIndisponibleException $e) {
-            $this->view->render('reservation/form', [
-                'salles' => $this->salleRepository->findAll(),
-                'errors' => [
-                    'salle_id' => [$e->getMessage()]
-                ],
-                'old' => $data
-            ]);
-
-            return;
-
-        } catch (SalleIntrouvableException $e) {
-            $this->view->render('reservation/form', [
-                'salles' => $this->salleRepository->findAll(),
-                'errors' => [
-                    'salle_id' => [$e->getMessage()]
-                ],
-                'old' => $data
-            ]);
-
-            return;
         }
     }
 
@@ -150,46 +144,44 @@ class ReservationController
         try {
             $this->reservationService->annuler($id);
 
+            $this->session->set(
+                'success',
+                'Réservation annulée avec succès.'
+            );
+
             header('Location: /reservations');
 
             exit;
-
         } catch (\RuntimeException $e) {
             http_response_code(404);
 
             $this->view->render('error/404');
-
-            return;
         }
     }
 
     public function apiIndex(): void
     {
-        $reservations = $this->reservationRepository->findAll();
-
-        header('Content-Type: application/json; charset=utf-8');
-
-        echo json_encode($reservations);
+        $this->jsonView->render('reservations', [
+            'data' => $this->reservationService->listerToutes(),
+        ]);
     }
 
     public function apiShow(int $id): void
     {
-        $reservation = $this->reservationRepository->findById($id);
+        $reservation = $this->reservationService->trouver($id);
 
         if ($reservation === null) {
             http_response_code(404);
 
-            header('Content-Type: application/json; charset=utf-8');
-
-            echo json_encode([
-                'message' => 'Réservation introuvable'
+            $this->jsonView->render('reservation', [
+                'message' => 'Réservation introuvable',
             ]);
 
             return;
         }
 
-        header('Content-Type: application/json; charset=utf-8');
-
-        echo json_encode($reservation);
+        $this->jsonView->render('reservation', [
+            'data' => $reservation,
+        ]);
     }
 }

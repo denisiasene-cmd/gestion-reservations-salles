@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Session;
 
-class SessionManager
+final class SessionManager implements SessionManagerInterface
 {
     public function set(string $key, mixed $value): void
     {

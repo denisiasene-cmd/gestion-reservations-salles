@@ -27,4 +27,3 @@ class Salle extends Model
         return $this->hasMany(Reservation::class, 'salle_id');
     }
 }
-

@@ -1,11 +1,10 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Repository;
 
 use App\Model\Salle;
 use Illuminate\Database\Capsule\Manager;
+use Illuminate\Pagination\Paginator;
 
 class EloquentSalleRepository implements SalleRepositoryInterface
 {
@@ -16,7 +15,23 @@ class EloquentSalleRepository implements SalleRepositoryInterface
 
     public function findAll(): array
     {
-        return Salle::query()->get()->all();
+        return Salle::query()
+            ->get()
+            ->all();
+    }
+
+    public function paginate(int $perPage = 2)
+    {
+        Paginator::currentPathResolver(
+            fn (): string => '/salles'
+        );
+
+        Paginator::currentPageResolver(
+            fn (): int => max(1, (int) ($_GET['page'] ?? 1))
+        );
+
+        return Salle::query()
+            ->paginate($perPage);
     }
 
     public function findById(int $id): ?Salle
@@ -30,4 +45,5 @@ class EloquentSalleRepository implements SalleRepositoryInterface
 
         return $salle;
     }
+    
 }

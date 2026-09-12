@@ -6,8 +6,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 
-$capsule = require dirname(__DIR__) . '/config/database.php';
-
+require dirname(__DIR__) . '/config/database.php';
 
 $migrationsPath = dirname(__DIR__) . '/database/migrations';
 
@@ -18,21 +17,40 @@ if (!Capsule::schema()->hasTable('migrations')) {
         $table->timestamp('executed_at')->useCurrent();
     });
 }
+
 $executed = Capsule::table('migrations')
     ->pluck('migration')
     ->all();
+
 $migrations = glob($migrationsPath . '/*.php');
 
-foreach ($migrations as $migration) {
+sort($migrations);
 
-    $name = basename($migration);
+foreach ($migrations as $migrationFile) {
+    $name = basename($migrationFile);
 
     if (in_array($name, $executed, true)) {
         echo "Ignorée : {$name}" . PHP_EOL;
         continue;
     }
 
-    require $migration;
+    require_once $migrationFile;
+
+    $classes = [
+        '01_create_salles.php' => CreateSallesTable::class,
+        '02_create_reservations.php' => CreateReservationsTable::class,
+        '03_create_users.php' => CreateUsersTable::class,
+    ];
+
+    if (!isset($classes[$name])) {
+        throw new RuntimeException(
+            "Classe de migration inconnue : {$name}"
+        );
+    }
+
+    $migration = new $classes[$name]();
+
+    $migration->up();
 
     Capsule::table('migrations')->insert([
         'migration' => $name,
@@ -40,5 +58,5 @@ foreach ($migrations as $migration) {
 
     echo "Exécutée : {$name}" . PHP_EOL;
 }
-echo "Migrations terminées." . PHP_EOL;
 
+echo "Migrations terminées." . PHP_EOL;
