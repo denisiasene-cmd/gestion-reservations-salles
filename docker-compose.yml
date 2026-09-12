@@ -28,7 +28,7 @@ services:
 
   php:
 
-    image: denisiasene/gestion-reservations-salles:v1.0.1
+    image: denisiasene/gestion-reservations-salles:v1.0.3
 
     volumes:
 
