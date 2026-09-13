@@ -28,4 +28,4 @@ COPY docker/nginx/render.conf /etc/nginx/conf.d/default.conf
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "envsubst '${PORT}' < /etc/nginx/conf.d/default.conf > /tmp/default.conf && mv /tmp/default.conf /etc/nginx/conf.d/default.conf && php-fpm -D && nginx -g 'daemon off;'"]
+CMD ["sh", "-c", "envsubst '${PORT}' < /etc/nginx/conf.d/default.conf > /tmp/default.conf && mv /tmp/default.conf /etc/nginx/conf.d/default.conf && nginx -t && php-fpm -D && nginx -g 'daemon off;'"]
