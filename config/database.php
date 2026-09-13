@@ -7,7 +7,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 $racine = dirname(__DIR__);
 
-Dotenv::createImmutable($racine)->load();
+Dotenv::createImmutable($racine)->safeLoad();
 
 $capsule = new Capsule();
 

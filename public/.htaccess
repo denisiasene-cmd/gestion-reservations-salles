@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Si le fichier ou dossier demande existe reellement (css, js, images...), on le sert tel quel
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Sinon on route tout vers index.php (front controller), equivalent du try_files nginx
+    RewriteRule ^ index.php [L]
+</IfModule>

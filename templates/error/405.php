@@ -4,15 +4,15 @@
     <div class="error-card">
 
         <div class="error-code">
-            404
+            405
         </div>
 
         <h1>
-            Page introuvable
+            Méthode non autorisée
         </h1>
 
         <p>
-            La ressource que vous recherchez est introuvable.
+            Cette méthode HTTP n'est pas autorisée pour cette ressource.
         </p>
 
         <a href="/salles" class="btn btn-primary">
