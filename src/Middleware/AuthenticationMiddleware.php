@@ -26,13 +26,8 @@ final class AuthenticationMiddleware
 
         return true;
     }
-
     private function isPublicRoute(string $method, string $uri): bool
     {
-        if ($uri === '/') {
-            return true;
-        }
-
         if ($uri === '/register') {
             return true;
         }
